@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SendApplication.Filters;
-using SendApplication.Models;
+using Shared.Models;
 
 namespace SendApplication
 {
@@ -30,6 +30,8 @@ namespace SendApplication
 
             services.AddMassTransit(x =>
             {
+                x.AddRequestClient<SomeRequest>();
+
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     cfg.Host("localhost", h =>
@@ -39,11 +41,10 @@ namespace SendApplication
                     });
 
                     cfg.UseSendFilter(typeof(SendHeaderFilter<>), context);
+                    cfg.ConfigureEndpoints(context);
                 });
-
-                x.AddRequestClient<SomeRequest>();
             });
-            
+
             services.AddMassTransitHostedService();
         }
 

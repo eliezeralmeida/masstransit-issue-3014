@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
-using SendApplication.Models;
+using Shared.Models;
 
 namespace SendApplication.Controllers
 {
@@ -20,16 +20,9 @@ namespace SendApplication.Controllers
         [Route("")]
         public async Task<IActionResult> Send()
         {
-            try
-            {
-                var response = await _client.GetResponse<SomeResponse>(new());
-            }
-            catch (Exception e)
-            {
-                // ignore error because no receiver implemented
-            }
+            var response2 = await _client.GetResponse<SomeResponse>(new SomeRequest("payload"));
 
-            return Ok();
+            return Ok($"Message response {response2.Message}");
         }
     }
 }
